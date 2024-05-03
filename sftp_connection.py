@@ -4,7 +4,7 @@ import os
 
 
 class Sftp:
-    def __init__(self, hostname, username, password=None, port=22, pem_file_path = None):
+    def __init__(self, hostname, username, local_file, remote_path, password=None, port=22, pem_file_path = None):
         """Constructor Method"""
         # Set connection object to None (initial value)
         self.connection = None
@@ -47,16 +47,16 @@ class Sftp:
 
     def sftp_upload(self):
         try:
-            if pem_file:
+            if self.pem_file:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                private_key = paramiko.RSAKey.from_private_key_file(pem_file)
+                private_key = paramiko.RSAKey.from_private_key_file(self.pem_file)
                 ssh.connect(hostname, port, username=username, pkey=private_key)
                 sftp = ssh.open_sftp()
             if password:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(hostname, port, username=username, password=password)
+                ssh.connect(self.hostname, port, username=self.username, password=self.password)
                 sftp = ssh.open_sftp()
 
             # Create remote directory if it doesn't exist
