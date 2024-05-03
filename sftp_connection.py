@@ -4,7 +4,7 @@ import os
 
 
 class Sftp:
-    def __init__(self, hostname, username, password, port=22, pem_file_path = None):
+    def __init__(self, hostname, username, password=None, port=22, pem_file_path = None):
         """Constructor Method"""
         # Set connection object to None (initial value)
         self.connection = None
@@ -33,27 +33,24 @@ class Sftp:
     def listdir(self, remote_path):
         """lists all the files and directories in the specified path and returns them"""
         for obj in self.connection.listdir(remote_path):
-            yield obj
+            return obj
 
     def listdir_attr(self, remote_path):
         """lists all the files and directories (with their attributes) in the specified path and returns them"""
         for attr in self.connection.listdir_attr(remote_path):
-            yield attr
+            return attr
 
     def disconnect(self):
         """Closes the sftp connection"""
         self.connection.close()
         print(f"Disconnected from host {self.hostname}")
 
-    def sftp_upload(self, hostname, port, username, pem_file, local_file, remote_path):
-        hostname = self.hostname
-        port = self.hostname
-        pem_file
+    def sftp_upload(self):
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             private_key = paramiko.RSAKey.from_private_key_file(pem_file)
-            ssh.connect(hostname, port, username=username, pkey=private_key)
+            ssh.connect(self.hostname, self.port, username=self.username, pkey=self.private_key)
 
             sftp = ssh.open_sftp()
 
