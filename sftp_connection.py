@@ -47,12 +47,17 @@ class Sftp:
 
     def sftp_upload(self):
         try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            private_key = paramiko.RSAKey.from_private_key_file(pem_file)
-            ssh.connect(self.hostname, self.port, username=self.username, pkey=self.private_key)
-
-            sftp = ssh.open_sftp()
+            if pem_file:
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                private_key = paramiko.RSAKey.from_private_key_file(pem_file)
+                ssh.connect(hostname, port, username=username, pkey=private_key)
+                sftp = ssh.open_sftp()
+            if password:
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(hostname, port, username=username, password=password)
+                sftp = ssh.open_sftp()
 
             # Create remote directory if it doesn't exist
             try:
