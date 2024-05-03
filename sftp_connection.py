@@ -13,6 +13,7 @@ class Sftp:
         self.password = password
         self.port = port
         self.pem_file_path= pem_file_path
+        self.local_file= local_file
 
     def connect(self):
         """Connects to the sftp server and returns the sftp connection object"""
@@ -61,17 +62,17 @@ class Sftp:
 
             # Create remote directory if it doesn't exist
             try:
-                sftp.chdir(remote_path)
+                sftp.chdir(self.remote_path)
             except IOError:
-                sftp.mkdir(remote_path)
-                sftp.chdir(remote_path)
+                sftp.mkdir(self.remote_path)
+                sftp.chdir(self.remote_path)
 
             # Upload the file
-            sftp.put(local_file, remote_path + '/' + os.path.basename(local_file))
+            sftp.put(self.local_file, self.remote_path + '/' + os.path.basename(self.local_file))
 
             sftp.close()
             ssh.close()
 
-            print(f"File {local_file} uploaded successfully to {remote_path}")
+            print(f"File {self.local_file} uploaded successfully to {self.remote_path}")
         except Exception as e:
             print(f"Error: {e}")
